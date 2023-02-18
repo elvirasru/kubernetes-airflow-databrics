@@ -48,4 +48,8 @@ helm upgrade --install airflow apache-airflow/airflow -n airflow \
   --set dags.gitSync.enabled=true
 ```
 
-
+----------
+How to delete the cluster:
+```commandline
+kind delete cluster --name=airflow-cluster 
+```
