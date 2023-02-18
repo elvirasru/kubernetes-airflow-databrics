@@ -6,6 +6,7 @@ Requirements:
 - helm
 - podman
 
+Follow the next steps to run airflow in a kubernetes cluster in your local environment:
 
 # 1. Create Kubernetes Cluster
 
