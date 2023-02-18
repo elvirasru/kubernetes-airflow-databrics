@@ -28,6 +28,10 @@ kubectl create namespace airflow
 # 3. Add airflow
 
 ```commandline
+helm repo add apache-airflow https://airflow.apache.org
+```
+
+```commandline
 helm install airflow apache-airflow/airflow --namespace airflow --debug
 ```
 
