@@ -34,6 +34,8 @@ Now, airflow will be accessible in http://localhost:8080/ by executing the follo
 ```commandline
 kubectl port-forward svc/airflow-webserver 8080:8080 --namespace airflow
 ```
+Username: admin
+Password: admin
 
 # 4. Add DAGs configuration
 
