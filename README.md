@@ -1,4 +1,5 @@
 # kubernetes-airflow-databrics
+(work in progress)
 
 Requirements:
 - kind
@@ -53,6 +54,40 @@ helm upgrade --install airflow apache-airflow/airflow -n airflow \
   --set dags.gitSync.branch=main \
   --set dags.gitSync.repo=https://github.com/elvirasru/kubernetes-airflow-databrics.git \
   --set dags.gitSync.enabled=true
+```
+
+# 5. Add Databrics provider
+
+First, let's create a new airflow image ([Dockerfile](Dockerfile)) with the databrics provider (``apache-airflow-providers-databricks``)
+
+```commandline
+podman build --tag custom-airflow:0.0.1 .
+podman save custom-airflow:0.0.1 -o custom-airflow.tar
+```
+
+Next, the image needs to be loaded into the cluster:
+```commandline
+kind load image-archive custom-airflow.tar --name airflow-cluster
+```
+
+To check whether the new image is in the cluster execute the following commands:
+```commandline
+kubectl get nodes
+podman exec -ti airflow-cluster-worker bash
+```
+And inside the node execute ``crictl images``.
+
+
+Finally:
+
+```commandline
+helm upgrade airflow apache-airflow/airflow -n airflow \
+  --set dags.gitSync.subPath="dags" \
+  --set dags.gitSync.branch=main \
+  --set dags.gitSync.repo=https://github.com/elvirasru/kubernetes-airflow-databrics.git \
+  --set dags.gitSync.enabled=true \
+  --set images.airflow.repository=localhost/custom-airflow \
+  --set images.airflow.tag=0.0.1
 ```
 
 ----------
