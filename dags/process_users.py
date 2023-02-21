@@ -94,4 +94,4 @@ with DAG('process_users', start_date=datetime(2022, 2, 1), schedule='@daily', ca
             '''
     )
 
-    is_api_available >> get_users >> extract_user_information >> create_csv_file >> create_table >> store_users
+    is_api_available >> get_users >> extract_user_information >> [create_csv_file, create_table] >> store_users
