@@ -14,7 +14,7 @@ USERS_END_POINT = 'api/v2/users?size=20'
 
 
 def extract_user_information(task_instance):
-    users = task_instance.xcom_pull(task_ids="extract_users")
+    users = task_instance.xcom_pull(task_ids="get_users")
     processed_users = []
     for user in users:
         processed_user = {
@@ -29,17 +29,20 @@ def extract_user_information(task_instance):
 
 
 def create_csv(task_instance):
-    mylist = task_instance.xcom_pull(task_ids="process_user")
-    with open('/tmp/processed_user.csv', 'w', newline='') as myfile:
-        wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
-        wr.writerow(mylist)
+    mylist = task_instance.xcom_pull(task_ids="extract_user_information")
+    with open('/tmp/processed_users.csv', 'w') as my_file:
+        writer = csv.writer(my_file)
+        for item in mylist:
+            writer.writerow([item['firstname'], item['lastname'],
+                             item['country'], item['gender'],
+                             item['employment'], item['email']])
 
 
 def store_user():
     hook = PostgresHook(postgres_conn_id='postgres')
     hook.copy_expert(
-        sql="COPY users FROM stdin WITH DELIMITER as ','",
-        filename='/tmp/processed_user.csv'
+        sql="COPY users FROM stdin WITH (FORMAT csv);",
+        filename='/tmp/processed_users.csv'
     )
 
 
@@ -52,7 +55,7 @@ with DAG('process_users', start_date=datetime(2022, 2, 1), schedule='@daily', ca
 
     get_users = SimpleHttpOperator(
         task_id='get_users',
-        http_conn_id='user_api',
+        http_conn_id='users_api',
         endpoint=USERS_END_POINT,
         method='GET',
         response_filter=lambda response: json.loads(response.text),
