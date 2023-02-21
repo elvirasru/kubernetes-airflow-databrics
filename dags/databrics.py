@@ -4,12 +4,13 @@ from airflow.datasets import Dataset
 from airflow.operators.python import PythonOperator
 from airflow.utils.dates import days_ago
 
-my_file = Dataset("/tmp/processed_users.csv")
+MY_FILE = Dataset("/tmp/processed_users.csv")
 
 with DAG(
         dag_id='my_first_databricks_operator',
-        schedule=[my_file],
+        schedule=[MY_FILE],
         start_date=days_ago(1),
+        catchup=False
 ) as dag:
     ready = PythonOperator(
         task_id='ready',

@@ -1,4 +1,5 @@
 from airflow import DAG
+from airflow.datasets import Dataset
 from airflow.providers.postgres.operators.postgres import PostgresOperator
 from airflow.providers.http.sensors.http import HttpSensor
 from airflow.providers.http.operators.http import SimpleHttpOperator
@@ -9,8 +10,8 @@ import json
 import csv
 from datetime import datetime
 
-
 USERS_END_POINT = 'api/v2/users?size=20'
+MY_FILE = Dataset("/tmp/processed_users.csv")
 
 
 def extract_user_information(task_instance):
@@ -69,7 +70,8 @@ with DAG('process_users', start_date=datetime(2022, 2, 1), schedule='@daily', ca
 
     create_csv_file = PythonOperator(
         task_id='create_csv_file',
-        python_callable=create_csv
+        python_callable=create_csv,
+        outlets=[MY_FILE]
     )
 
     store_users = PythonOperator(
