@@ -8,10 +8,17 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 
 import json
 import csv
-from datetime import datetime
+from datetime import datetime, timedelta
 
 USERS_END_POINT = 'api/v2/users?size=20'
 MY_FILE = Dataset("/tmp/processed_users.csv")
+DEFAULT_ARGS = {
+    "email_on_failure": True,
+    "email_on_retry": False,
+    "email": "airflow-kubernetes-test@teml.net",
+    "retries": 2,
+    "retry_delay": timedelta(seconds=10)
+}
 
 
 def extract_user_information(task_instance):
@@ -47,7 +54,8 @@ def store_user():
     )
 
 
-with DAG('process_users', start_date=datetime(2022, 2, 1), schedule='@daily', catchup=False) as dag:
+with DAG('process_users', start_date=datetime(2022, 2, 1), schedule='@daily',
+         catchup=False, default_args=DEFAULT_ARGS) as dag:
     is_api_available = HttpSensor(
         task_id='is_api_available',
         http_conn_id='users_api',
