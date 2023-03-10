@@ -4,7 +4,7 @@
 Everytime an external service is used in a task, it means that an external connection
 needs to be created.
 
-##### Postgres
+##### - Postgres -
 
 Given that the postgres database is in one of the pods, then we need to look for what is the host:
 ```commandline
@@ -23,12 +23,12 @@ airflow-worker          ClusterIP   None           <none>        8793/TCP       
 
 ![connection_images/postgres_api.png](connection_images/postgres_api.png)
 
-##### API
+##### - API -
 ![connection_images/users_api.png](connection_images/users_api.png)
 
-##### Databrics
+##### - Databrics -
 
-##### Sendgrid
+##### - Sendgrid -
 ![connection_images/sendgrid.png](connection_images/sendgrid.png)
 
 
