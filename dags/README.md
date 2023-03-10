@@ -28,6 +28,8 @@ airflow-worker          ClusterIP   None           <none>        8793/TCP       
 
 ##### Databrics
 
+##### Sendgrid
+![connection_images/sendgrid.png](connection_images/sendgrid.png)
 
 
 
