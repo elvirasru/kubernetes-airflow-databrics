@@ -40,6 +40,7 @@ def create_csv(task_instance):
     mylist = task_instance.xcom_pull(task_ids="extract_user_information")
     with open('/tmp/processed_users.csv', 'w') as my_file:
         writer = csv.writer(my_file)
+        writer.writerow(["firstname", "lastname", "country", "gender", "employment", "email"])
         for item in mylist:
             writer.writerow([item['firstname'], item['lastname'],
                              item['country'], item['gender'],

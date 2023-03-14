@@ -40,8 +40,7 @@ Now, airflow will be accessible in http://localhost:8080/ by executing the follo
 ```commandline
 kubectl port-forward svc/airflow-webserver 8080:8080 --namespace airflow
 ```
-Username: admin
-Password: admin
+Username: admin & Password: admin
 
 # 4. Add DAGs configuration
 
@@ -58,7 +57,8 @@ helm upgrade --install airflow apache-airflow/airflow -n airflow \
 
 # 5. Add Databrics provider
 
-First, let's create a new airflow image ([Dockerfile](Dockerfile)) with the databrics provider (``apache-airflow-providers-databricks``)
+First, let's create a new airflow image ([Dockerfile](Dockerfile))<sup>[**](#myfootnote1)</sup> with the databrics provider (``apache-airflow-providers-databricks``):
+
 
 ```commandline
 podman build --tag custom-airflow:0.0.1 .
@@ -70,12 +70,12 @@ Next, the image needs to be loaded into the cluster:
 kind load image-archive custom-airflow.tar --name airflow-cluster
 ```
 
-To check whether the new image is in the cluster execute the following commands:
+In order to check whether the new image is in the cluster execute the following commands:
 ```commandline
 kubectl get nodes
 podman exec -ti airflow-cluster-worker bash
 ```
-And inside the node execute ``crictl images``.
+Next, inside the node execute ``crictl images``.
 
 
 Finally:
@@ -89,6 +89,10 @@ helm upgrade airflow apache-airflow/airflow -n airflow \
   --set images.airflow.repository=localhost/custom-airflow \
   --set images.airflow.tag=0.0.1
 ```
+
+> <a name="myfootnote1">**</a> It should be noted that the Dockerfile also contains the
+[Great Expectation](https://greatexpectations.io/) provider. This is used in the 
+[process_users_great_expectations](dags/process_users_great_expectations.py) DAG to run some tests on the users' data.
 
 # 6. Add Email configuration (optional)
 
