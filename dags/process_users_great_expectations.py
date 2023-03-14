@@ -5,6 +5,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 
 import pandas as pd
+from great_expectations.core.batch import RuntimeBatchRequest
 from great_expectations_provider.operators.great_expectations import GreatExpectationsOperator
 from great_expectations.data_context.types.base import (
     DataContextConfig,
@@ -21,15 +22,28 @@ example_data_context_config = DataContextConfig(
         "config_version": 3.0,
         "datasources": {
             "my_datasource": {
-                "name": "my_pandas_dataframe",
-                "class_name": "Datasource",
-                "execution_engine": {"class_name": "PandasExecutionEngine"},
+                "module_name": "great_expectations.datasource",
                 "data_connectors": {
+                    "default_inferred_data_connector_name": {
+                        "default_regex": {
+                            "group_names": ["data_asset_name"],
+                            "pattern": "(.*)",
+                        },
+                        "base_directory": data_dir,
+                        "module_name": "great_expectations.datasource.data_connector",
+                        "class_name": "InferredAssetFilesystemDataConnector",
+                    },
                     "default_runtime_data_connector_name": {
+                        "batch_identifiers": ["default_identifier_name"],
+                        "module_name": "great_expectations.datasource.data_connector",
                         "class_name": "RuntimeDataConnector",
-                        "batch_identifiers": ["batch_id"],
-                    }
+                    },
                 },
+                "execution_engine": {
+                    "module_name": "great_expectations.execution_engine",
+                    "class_name": "PandasExecutionEngine",
+                },
+                "class_name": "Datasource",
             }
         },
         "config_variables_file_path": os.path.join(ge_root_dir, "uncommitted", "config_variables.yml"),
@@ -82,6 +96,23 @@ example_data_context_config = DataContextConfig(
     }
 )
 
+df = pd.DataFrame(
+    {
+        "fruits": ["apple", "banana", "cherry", "date"],
+        "animals": ["zebra", "yak", "xylo", "walrus"],
+        "places": ["house", "school", "park", "store"],
+    }
+)
+
+runtime_batch_request = RuntimeBatchRequest(
+    **{
+        "datasource_name": "my_datasource",
+        "data_connector_name": "default_runtime_data_connector_name",
+        "data_asset_name": "my_alphabetical_dataframe",
+        "runtime_parameters": {"batch_data": df},
+        "batch_identifiers": {"default_identifier_name": "default_identifier"},
+    }
+)
 example_checkpoint_config = CheckpointConfig(
     **{
         "name": "taxi.pass.chk",
@@ -110,13 +141,7 @@ example_checkpoint_config = CheckpointConfig(
         "runtime_configuration": {},
         "validations": [
             {
-                "batch_request": {
-                    "datasource_name": "my_pandas_dataframe",
-                    "data_connector_name": "default_runtime_data_connector_name",
-                    "data_asset_name": "addresses",
-                    "batch_identifiers": {"batch_id": "default_identifier"},
-                    "runtime_parameters": {"batch_data": pd.DataFrame({"test": [1, 2, 3]})},
-                },
+                "batch_request": runtime_batch_request
             }
         ],
         "profilers": [],
