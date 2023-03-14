@@ -12,9 +12,9 @@ from great_expectations.data_context.types.base import (
 )
 from datetime import datetime
 
-base_path = Path(__file__).parents[2]
-data_dir = os.path.join(base_path, "data")
-ge_root_dir = os.path.join(base_path, "great_expectations2")
+# base_path = Path(__file__).parents[2]
+data_dir = "/opt/airflow/data"
+ge_root_dir = "/opt/airflow/great_expectations"
 
 example_data_context_config = DataContextConfig(
     **{
