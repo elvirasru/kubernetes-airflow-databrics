@@ -14,7 +14,7 @@ from great_expectations.data_context.types.base import (
 from datetime import datetime
 
 # base_path = Path(__file__).parents[2]
-data_dir = "/opt/airflow/data"
+data_dir = "/tmp"
 ge_root_dir = "/opt/airflow/great_expectations"
 
 example_data_context_config = DataContextConfig(
@@ -127,7 +127,7 @@ example_checkpoint_config = CheckpointConfig(
                 "batch_request": {
                     "datasource_name": "my_datasource",
                     "data_connector_name": "default_inferred_data_connector_name",
-                    "data_asset_name": "yellow_tripdata_sample_2019-01.csv",
+                    "data_asset_name": "processed_users.csv",
                     "data_connector_query": {"index": -1},
                 },
             }
