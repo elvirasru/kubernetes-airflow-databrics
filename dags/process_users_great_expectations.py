@@ -96,23 +96,6 @@ example_data_context_config = DataContextConfig(
     }
 )
 
-df = pd.DataFrame(
-    {
-        "fruits": ["apple", "banana", "cherry", "date"],
-        "animals": ["zebra", "yak", "xylo", "walrus"],
-        "places": ["house", "school", "park", "store"],
-    }
-)
-
-runtime_batch_request = RuntimeBatchRequest(
-    **{
-        "datasource_name": "my_datasource",
-        "data_connector_name": "default_runtime_data_connector_name",
-        "data_asset_name": "my_alphabetical_dataframe",
-        "runtime_parameters": {"batch_data": df},
-        "batch_identifiers": {"default_identifier_name": "default_identifier"},
-    }
-)
 example_checkpoint_config = CheckpointConfig(
     **{
         "name": "taxi.pass.chk",
@@ -141,7 +124,12 @@ example_checkpoint_config = CheckpointConfig(
         "runtime_configuration": {},
         "validations": [
             {
-                "batch_request": runtime_batch_request
+                "batch_request": {
+                    "datasource_name": "my_datasource",
+                    "data_connector_name": "default_inferred_data_connector_name",
+                    "data_asset_name": "yellow_tripdata_sample_2019-01.csv",
+                    "data_connector_query": {"index": -1},
+                },
             }
         ],
         "profilers": [],
