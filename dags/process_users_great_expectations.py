@@ -52,7 +52,7 @@ example_data_context_config = DataContextConfig(
                 "class_name": "ExpectationsStore",
                 "store_backend": {
                     "class_name": "TupleFilesystemStoreBackend",
-                    "base_directory": os.path.join(ge_root_dir, "expectations"),
+                    "base_directory": os.path.join("/opt/airflow", "expectations_suite"),
                 },
             },
             "validations_store": {
