@@ -14,7 +14,7 @@ from datetime import datetime
 
 base_path = Path(__file__).parents[2]
 data_dir = os.path.join(base_path, "data")
-ge_root_dir = os.path.join(base_path, "great_expectations")
+ge_root_dir = os.path.join(base_path, "great_expectations2")
 
 example_data_context_config = DataContextConfig(
     **{
