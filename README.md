@@ -1,5 +1,4 @@
 # kubernetes-airflow-databrics
-(work in progress)
 
 Requirements:
 - kind
