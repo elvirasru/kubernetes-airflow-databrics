@@ -75,7 +75,7 @@ In order to check whether the new image is in the cluster execute the following 
 kubectl get nodes
 podman exec -ti airflow-cluster-worker bash
 ```
-Next, inside the node execute ``crictl images``.
+Then, inside the node execute ``crictl images``.
 
 
 Finally:
@@ -89,6 +89,7 @@ helm upgrade airflow apache-airflow/airflow -n airflow \
   --set images.airflow.repository=localhost/custom-airflow \
   --set images.airflow.tag=0.0.1
 ```
+> **NOTE**: The Databrics Operator won't work unless the [corresponding connection](dags/README.md) is defined.
 
 > <a name="myfootnote1">**</a> It should be noted that the Dockerfile also contains the
 [Great Expectation](https://greatexpectations.io/) provider. This is used in the 
